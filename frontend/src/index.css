@@ -12,10 +12,30 @@ h1{
   @apply text-2xl;
 }
 
-.home-main{
+.home-main, .auth-cnt{
+  @apply bg-secondary;
   height: calc(100vh - 80px);
+}
+
+.auth-cnt{
+  background-image: url('./assets/auth_page.png');
+  background-size: cover;
 }
 
 .sec-1 > *{
   margin: 1rem 0;
+}
+
+@media screen and (max-width: 1320px) {
+  .auth-cnt{
+    background-repeat:no-repeat;
+    background-size: contain;
+    background-position:top;
+  }
+}
+
+@media screen and (max-width: 980px) {
+  .auth-cnt{
+    background-image: unset;
+  }
 }
