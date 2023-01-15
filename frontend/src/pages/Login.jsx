@@ -57,7 +57,7 @@ const Login = () => {
                         />
                     </FormControl>
                 </div>
-                <p className=' text-sm text-primary text-center'>Don't have and Account ? <NavLink to="register" className={'text-danger underline'}>Register Here</NavLink></p>
+                <p className=' text-sm text-primary text-center'>Don't have an Account ? <NavLink to="/register" className={'text-danger underline'}>Register Here</NavLink></p>
                 <Button>Login</Button>
             </form>
         </div>

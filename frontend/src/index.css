@@ -26,6 +26,10 @@ h1{
   margin: 1rem 0;
 }
 
+.register-form > div{
+  position: relative;
+}
+
 @media screen and (max-width: 1320px) {
   .auth-cnt{
     background-repeat:no-repeat;
