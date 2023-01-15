@@ -11,3 +11,11 @@
 h1{
   @apply text-2xl;
 }
+
+.home-main{
+  height: calc(100vh - 80px);
+}
+
+.sec-1 > *{
+  margin: 1rem 0;
+}
