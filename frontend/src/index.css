@@ -22,6 +22,12 @@ h1{
   background-size: cover;
 }
 
+.link-btn{
+  @apply bg-accent text-secondary;
+  padding: .2rem 1rem;
+  border-radius: 1rem;
+}
+
 .sec-1 > *{
   margin: 1rem 0;
 }

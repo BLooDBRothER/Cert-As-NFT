@@ -1,6 +1,6 @@
 import React from 'react'
-import home_logo from '../assets/home_cert.png'
-import Button from '../components/Button'
+import home_logo from '../../assets/home_cert.png'
+import Button from '../../components/Button'
 import { NavLink } from 'react-router-dom'
 
 const Index = () => {

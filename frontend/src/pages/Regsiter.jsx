@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import { NavLink } from 'react-router-dom'
-import { FormControl, InputLabel, Input, InputAdornment, IconButton } from '@mui/material';
+import { NavLink, useNavigate } from 'react-router-dom'
+import { FormControl, InputLabel, Input, InputAdornment, IconButton, Alert } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import EmailIcon from '@mui/icons-material/Email';
@@ -10,18 +10,65 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import ArticleIcon from '@mui/icons-material/Article';
 import Button from '../components/Button';
+import { useUser } from '../context/User';
+import Resend from '../components/Resend';
+import { axiosSendMail } from '../axios';
+import Header from '../components/Header';
 
 const Register = () => {
+
+    const {user, register} = useUser();
+
+    const navigate = useNavigate();
+
     const [orgName, setOrgName] = useState('');
     const [orgId, setOrgId] = useState('');
     const [email, setEmail] = useState('');
     const [walletAddr, setWalletAddr] = useState('');
     const [password, setPassword] = useState('');
     const [rePassword, setRePassword] = useState('');
+
+    const [reminingTime, setReminigTime] = useState(0);
     
     const [showPassword, setShowPassword] = useState(false);
     const [passErr, setPassErr] = useState('');
     const [rePassErr, setRePassErr] = useState('');
+    const [alert, setAlert] = useState('');
+
+    
+
+    const signup = async (e) => {
+        console.log(e);
+        e.preventDefault();
+        const data = {
+            email,
+            password,
+            rePassword,
+            organization_name: orgName,
+            wallet_address: walletAddr,
+            organization_id: orgId
+        }
+        const res = await register(data);
+        console.log(res);
+        if(res.status === 200){
+            console.log(res.data.resend_time)
+            setReminigTime(res.data.resend_time);
+            return;
+        }
+        setAlert(res.data.message);
+        setTimeout(() => {
+            setAlert('')
+        }, 5000);
+    }
+
+    const resendEmail = async () => {
+        const res = await axiosSendMail(email);
+        console.log(res)
+        if (res.status === 200 || res.status === 400) {
+            setReminigTime(res.data.resend_time);
+            return;
+        }
+    }
 
     const checkPasswordMatch = (e) => {
         if(!password.localeCompare('') || !rePassword.localeCompare('')){
@@ -47,14 +94,24 @@ const Register = () => {
         }
     }
 
+    useEffect(() => {
+        if(!user.isLoggedIn)
+            return;
+
+        navigate("/");
+    }, [user]);
+
     useEffect(checkPasswordRegex, [password]);
     useEffect(checkPasswordMatch, [password, rePassword]);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     return (
+        <>
+        <Header />
         <div className="auth-cnt flex items-center justify-center">
-            <form className='p-4 bg-secondary-lg rounded-lg text-2xl flex flex-col gap-5 mt-4 register-form'>
+          {!reminingTime ?
+            <form className='p-4 bg-secondary-lg rounded-lg text-2xl flex flex-col gap-5 mt-4 register-form' onSubmit={signup}>
                 <div className='text-accent flex gap-2 justify-center items-center pb-2 border-b border-primary'>
                     <WorkspacePremiumIcon />
                     <h1>Organization Register</h1>
@@ -179,9 +236,14 @@ const Register = () => {
                     </FormControl>
                 </div>
                 <p className=' text-sm text-primary text-center'>Already have an Account ? <NavLink to="/login" className={'text-danger underline'}>Login Here</NavLink></p>
-                <Button>Login</Button>
+                <Button>Register</Button>
+                {alert && <Alert severity="error">{alert}</Alert>}
             </form>
+            :
+            <Resend time={reminingTime} onComplete={resendEmail} />
+            }
         </div>
+        </>
     )
 }
 

@@ -6,33 +6,34 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import Index from './pages/Index';
 import Login from './pages/Login';
 import Register from './pages/Regsiter';
+import UserProvider from './context/User';
+import Verify from './pages/Verify';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: [
-      {
-        index: true,
-        element: <Index />
-      },
-      {
-        path: 'login',
-        element: <Login />
-      },
-      {
-        path: 'register',
-        element: <Register />
-      }
-    ]
   },
+  {
+    path: 'login',
+    element: <Login />
+  },
+  {
+    path: 'register',
+    element: <Register />
+  },
+  {
+    path: "/verify",
+    element: <Verify />
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
   </React.StrictMode>,
 )
