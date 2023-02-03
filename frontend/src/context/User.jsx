@@ -24,6 +24,9 @@ const UserProvider = ({children}) => {
 
   async function login(data){
     const res = await axiosLogin(data);
+    if(res.status === 200){
+      setUser({email: res.data.email, isLoggedIn: true});
+    }
     return res;
   }
 

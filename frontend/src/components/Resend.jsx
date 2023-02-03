@@ -7,14 +7,20 @@ const Resend = ({ time, onComplete }) => {
     console.log(time);
     const reminingTime = new Date(time);
     const time_left = calculateRemainingTime();
-    const [timeStr, setTimeStr] = useState(time_left <=0 ? '' : '01:59');
+    const [timeStr, setTimeStr] = useState(time_left <= 0 ? '' : createTimeStr(time_left));
 
     let intervalUid;
 
-    function calculateRemainingTime(){
+    function calculateRemainingTime() {
         const next_resend = reminingTime.getTime();
         const now = (new Date()).getTime();
         return next_resend - now;
+    }
+
+    function createTimeStr(time_left) {
+        let seconds = Math.floor((time_left % (1000 * 60)) / 1000);
+        let minutes = Math.floor((time_left % (1000 * 60 * 60)) / (1000 * 60));
+        return `${minutes}:${seconds}`;
     }
 
     function setReminigTime() {
@@ -27,9 +33,7 @@ const Resend = ({ time, onComplete }) => {
             return
         }
         else {
-            let seconds = Math.floor((time_left % (1000 * 60)) / 1000);
-            let minutes = Math.floor((time_left % (1000 * 60 * 60)) / (1000 * 60));
-            setTimeStr(`${minutes}:${seconds}`);
+            setTimeStr(createTimeStr(time_left));
         }
     }
 

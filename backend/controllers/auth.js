@@ -113,7 +113,7 @@ exports.login = async (req, res) => {
     
         res.cookie("jwt", jsonToken, {secure: true, sameSite:"none", httpOnly: true});
     
-        return res.status(200).send({"message": "Logged in successfullt", email: organization.email}) 
+        return res.status(200).send({"message": "Logged in successfully", email: organization.email}) 
     }
     catch (error){
         console.log(error);

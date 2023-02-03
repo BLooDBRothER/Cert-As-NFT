@@ -57,7 +57,7 @@ const Login = () => {
             }, 5000);
         }
         if(res)
-        console.log(res);
+            console.log(res);
     }
 
     useEffect(() => {
