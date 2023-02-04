@@ -16,7 +16,7 @@ const initMongo = require('./configs/db');
 const initPassport = require('./middleware/jwt');
 initPassport(passport, process.env.JWT_SECRET)
 
-initMongo(mongoose, process.env.MONGO_URI)
+initMongo(mongoose, process.env.MONGO_URI);
 
 const authRouter = require('./routes/auth.routes');
 
