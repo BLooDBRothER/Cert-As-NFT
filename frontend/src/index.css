@@ -14,7 +14,8 @@ h1{
 
 .home-main, .auth-cnt{
   @apply bg-secondary;
-  height: calc(100vh - 80px);
+  min-height: calc(100vh - 80px);
+  padding: 2rem 1rem;
 }
 
 .auth-cnt{
