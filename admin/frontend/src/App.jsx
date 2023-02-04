@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { io } from 'socket.io-client'
-
+import axios from 'axios';
+import Home from './pages/home/Home';
 function App() {
 
   const socket = useRef(null);
@@ -16,11 +17,15 @@ function App() {
     });
   }, []);
 
+  const sendReq = async () => {
+    const res = await axios.get('http://localhost:4001/exe');
+    console.log(res);
+  }
 
   return (
-    <div className="App">
-      <button>Test</button>
-    </div>
+    <>
+        <Home />
+    </>
   )
 }
 
