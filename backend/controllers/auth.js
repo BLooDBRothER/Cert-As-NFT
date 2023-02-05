@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 const Organization = require('../model/organization');
+const Status = require('../model/status');
 const sendVerificationEmail = require('../utils/mail');
 const { validationResult } = require('express-validator');
 
@@ -50,18 +51,20 @@ exports.verifyMail = async (req, res) => {
     try{
         const organization = await Organization.findOne({_id: payload.id});
         if(!organization) return res.status(400).send({"message": "Invalid request"});
+        if(organization.isVerified){
+            return res.status(200).json({"message": 'E-Mail verified successfully.\nYour account is being reviewed and let you know once approved.'});
+        }
         
         await Organization.updateOne({_id: organization._id}, {isVerified: true});
 
-        const jsonToken = organization.generateJwt();
-
-        res.cookie("jwt", jsonToken, {secure: true, sameSite:"none", httpOnly: true});
+        const org_status = new Status({organization_id: organization._id, status: "pending"});
+        await org_status.save();
 
         return res.status(200).json({"message": 'E-Mail verified successfully.\nYour account is being reviewed and let you know once approved.'});
     }
     catch(error){
         console.log(error)
-        return res.status(500).json({"message": "server error"})
+        return res.status(500).json({"message": "Please try again later"})
     }
 }
 
@@ -103,10 +106,16 @@ exports.login = async (req, res) => {
         if(!organization.isVerified){
             return res.status(401).send({"message": "E-Mail is not verified", resend_time: organization.resend_time});
         }
+
+        const org_status = await Status.findOne({organization_id: organization._id});
     
-        // if(organization.status === "pending"){
-        //     return res.status(403).send({"message": "Your account is being reviewed and let you know once approved."});
-        // }
+        if(org_status.status === "pending"){
+            return res.status(403).send({"message": "Your account is being reviewed and let you know once approved."});
+        }
+
+        if(org_status.status === "rejected"){
+            return res.status(403).send({"message": "The account seems not to be valid"});
+        }
     
         const jsonToken = organization.generateJwt();
         console.log(jsonToken);

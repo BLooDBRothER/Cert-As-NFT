@@ -2,7 +2,8 @@
 function initMongo(mongoose, mongoURI) {
     console.log(mongoURI);
     
-    mongoose.connect(mongoURI, { useUnifiedTopology: false, useNewUrlParser: true })
+    mongoose.set("strictQuery", true);
+    mongoose.connect(mongoURI, { useUnifiedTopology: false, useNewUrlParser: true, family: 4 })
     
     const connection = mongoose.connection;
     connection.once('open', () => console.log('MongoDB --  database connection established successfully!'));

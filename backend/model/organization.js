@@ -30,10 +30,6 @@ const organizationSchema = new Schema(
         phone:{
             type: Number
         },
-        status: {
-            type: String,
-            enum: ["pending", "verified", "rejected"]
-        },
         wallet_address:{
             type: String,
             trim: true

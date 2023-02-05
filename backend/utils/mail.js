@@ -6,7 +6,10 @@ function sendEmail(mailOpts) {
     const mailOptions = {...mailOpts, from: process.env.FROM_MAIL}
     return new Promise((resolve, reject) => {
         sgMail.send(mailOptions, (error, result) => {
-            if (error) return reject(error);
+            if (error) {
+                console.log(error);
+                return reject(error)
+            };
             return resolve(result);
         });
     });
@@ -29,6 +32,7 @@ async function sendVerificationEmail(organization, req, res){
 
         res.status(200).json({"message": 'A verification email has been sent to your E-Mail.', resend_time: organization_.resend_time});
     }catch (error) {
+        console.log('veri error')
         console.log(error)
         return res.status(500).json({"message": "server error"})
     }
