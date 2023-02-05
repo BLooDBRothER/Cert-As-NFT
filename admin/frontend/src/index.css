@@ -37,6 +37,14 @@ h1{
   position: relative;
 }
 
+.approve-btn{
+  @apply bg-success;
+}
+
+.reject-btn{
+  @apply bg-danger;
+}
+
 @media screen and (max-width: 1320px) {
   .auth-cnt{
     background-repeat:no-repeat;
