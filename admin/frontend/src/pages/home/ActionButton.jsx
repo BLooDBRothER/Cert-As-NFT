@@ -7,6 +7,7 @@ const ActionButton = ({data}) => {
 
     const handleClick = (type) => {
         console.log(type, data);
+        data.status = type;
     }
 
   return (
