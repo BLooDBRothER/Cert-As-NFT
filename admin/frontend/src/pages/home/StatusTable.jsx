@@ -1,18 +1,15 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ActionButton from "./ActionButton";
 import { DataGrid } from "@mui/x-data-grid";
 import Pagination from "./Pagination";
+import { axiosGetData } from "../../data/axios";
+import { io } from "socket.io-client";
+import Button from "../../components/Button";
+import useNotification from "../../hooks/useNotification";
+
+const socket = io("ws://localhost:4000")
 
 const columns = [
-  {
-    field: "id",
-    headerName: "ID",
-    sortable: false,
-    flex: 1,
-    headerClassName: "bg-accent",
-    headerAlign: "center",
-    cellClassName: '!justify-center'
-  },
   {
     field: "organization_id",
     headerName: "Organization Id",
@@ -20,7 +17,7 @@ const columns = [
     flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: '!justify-center',
+    cellClassName: "!justify-center",
   },
   {
     field: "organization_name",
@@ -29,7 +26,7 @@ const columns = [
     flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: '!justify-center',
+    cellClassName: "!justify-center",
   },
   {
     field: "email",
@@ -38,7 +35,7 @@ const columns = [
     flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: '!justify-center',
+    cellClassName: "!justify-center",
   },
   {
     field: "wallet_address",
@@ -47,7 +44,18 @@ const columns = [
     flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: '!justify-center',
+    cellClassName: "!justify-center",
+  },
+  {
+    field: "created_at",
+    headerName: "Created At",
+    sortable: false,
+    flex: 1,
+    headerClassName: "bg-accent",
+    headerAlign: "center",
+    cellClassName: "!justify-center",
+    valueGetter: (params) =>
+      `${new Date(params.row.created_at).toDateString()}`,
   },
   {
     field: "status",
@@ -56,7 +64,9 @@ const columns = [
     flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: '!justify-center',
+    cellClassName: (params) => {
+      return `!justify-center ${params.row.status === "verified" && 'text-success'} ${ params.row.status === "rejected" && 'text-danger'}`
+    },
   },
   {
     field: "action",
@@ -65,7 +75,7 @@ const columns = [
     sortable: false,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: '!justify-center',
+    cellClassName: "!justify-center",
     renderCell: (params) => {
       return (
         <>
@@ -170,21 +180,71 @@ const rows = [
 ];
 
 const StatusTable = () => {
+
+  const [data, setData] = useState([]);
+  const [toShowAllData, setToShowAllData] = useState(false);
+  const pendingData = data.filter(d => d.status === "pending");
+
+  const [notificationMsg, setNotificationMsg] = useNotification();
+
+  useEffect(() => {
+    console.log('eff', data);
+  }, [data])
+
+  useEffect(() => {
+    console.log("hi");
+    socket?.on("sendPending", (socketData) => {
+      console.log(socketData);
+      setData([socketData, ...data]);
+      const msg = `New Request from ${socketData.organization_name}`;
+      setNotificationMsg(msg);
+    });
+    return () => {
+      socket?.off("sendPending")
+    }
+  }, []);
+
+  useEffect(() => {
+    (async function () {
+      console.log("in");
+      const res = await axiosGetData();
+      console.log("res", res);
+      setData(res.data);
+    })();
+  }, []);
+
   return (
-    <div className="h-[600px] w-10/12 m-auto text-primary">
+    <div className=" w-10/12 m-auto text-primary">
       <DataGrid
+        autoHeight
         sx={{
+          "&.MuiDataGrid-root .MuiDataGrid-cell:focus-within": {
+            outline: "none !important",
+          },
           color: "white",
         }}
-        rows={rows}
+        rows={toShowAllData ? data : pendingData}
         columns={columns}
         rowHeight={100}
         pageSize={5}
         rowsPerPageOptions={[5]}
         components={{
-            Pagination: Pagination
+          Pagination: Pagination,
         }}
       />
+      <Button handleClick={() => {
+        Notification.requestPermission().then((permission) => {
+          // If the user accepts, let's create a notification
+          if (permission === "granted") {
+            const notification = new Notification("Hi there!");
+            // …
+          }
+        });
+      }}
+      handleCss="m-2"
+      >
+        {toShowAllData ? "Pending" : "All Data"}
+      </Button>
     </div>
   );
 };

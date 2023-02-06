@@ -3,6 +3,7 @@ import axiosClient from "../config.axios";
 const endpoint = {
   login: "api/auth/login",
   logout: "api/auth/logout",
+  data: "api/admin/get-data"
 };
 
 function returnResp(res) {
@@ -40,6 +41,16 @@ export async function axiosLogout() {
     });
     return returnResp(res);
   } catch (errRes) {
+    return returnResp(errRes.response);
+  }
+}
+
+export async function axiosGetData(){
+  try{
+    const res = await axiosClient.get(endpoint.data);
+    return returnResp(res);
+  }
+  catch(errRes){
     return returnResp(errRes.response);
   }
 }
