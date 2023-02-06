@@ -14,19 +14,23 @@ const columns = [
     field: "organization_id",
     headerName: "Organization Id",
     sortable: false,
-    flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
+    flex: 0.5,
     cellClassName: "!justify-center",
   },
   {
     field: "organization_name",
-    headerName: "Organization name",
+    headerName: "Name",
     sortable: false,
-    flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: "!justify-center",
+    cellClassName: "!px-2 !justify-center",
+    renderCell: (params) => {
+      return (
+        <span className=" whitespace-normal">{params.row.organization_name}</span>
+      )
+    }
   },
   {
     field: "email",
@@ -36,6 +40,11 @@ const columns = [
     headerClassName: "bg-accent",
     headerAlign: "center",
     cellClassName: "!justify-center",
+    renderCell: (params) => {
+      return (
+        <span>{params.row.email}</span>
+      )
+    }
   },
   {
     field: "wallet_address",
@@ -44,28 +53,35 @@ const columns = [
     flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: "!justify-center",
+    cellClassName: "!justify-center ",
+    renderCell: (params) => {
+      return (
+        <span className=" break-all whitespace-normal">{params.row.wallet_address}</span>
+      )
+    }
   },
   {
     field: "created_at",
     headerName: "Created At",
     sortable: false,
-    flex: 1,
+    flex: 0.5,
     headerClassName: "bg-accent",
     headerAlign: "center",
     cellClassName: "!justify-center",
-    valueGetter: (params) =>
-      `${new Date(params.row.created_at).toDateString()}`,
+    renderCell: (params) => {
+      return (
+        <span className=" whitespace-normal">{new Date(params.row.created_at).toDateString()}</span>
+      )
+    }
   },
   {
     field: "status",
     headerName: "Status",
     sortable: false,
-    flex: 1,
     headerClassName: "bg-accent",
     headerAlign: "center",
     cellClassName: (params) => {
-      return `!justify-center ${params.row.status === "verified" && 'text-success'} ${ params.row.status === "rejected" && 'text-danger'}`
+      return `!px-2 !justify-center ${params.row.status === "verified" && 'text-success'} ${ params.row.status === "rejected" && 'text-danger'}`
     },
   },
   {
@@ -214,7 +230,7 @@ const StatusTable = () => {
   }, []);
 
   return (
-    <div className=" w-10/12 m-auto text-primary">
+    <div className=" w-11/12 m-auto text-primary">
       <DataGrid
         autoHeight
         sx={{
