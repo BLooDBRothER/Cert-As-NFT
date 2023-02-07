@@ -3,7 +3,8 @@ import axiosClient from "../config.axios";
 const endpoint = {
   login: "api/auth/login",
   logout: "api/auth/logout",
-  data: "api/admin/get-data"
+  data: "api/admin/get-data",
+  updateStatus: "api/admin/update-status"
 };
 
 function returnResp(res) {
@@ -48,6 +49,16 @@ export async function axiosLogout() {
 export async function axiosGetData(){
   try{
     const res = await axiosClient.get(endpoint.data);
+    return returnResp(res);
+  }
+  catch(errRes){
+    return returnResp(errRes.response);
+  }
+}
+
+export async function axiosUpdateStatus(payload){
+  try{
+    const res = await axiosClient.post(endpoint.updateStatus, payload);
     return returnResp(res);
   }
   catch(errRes){

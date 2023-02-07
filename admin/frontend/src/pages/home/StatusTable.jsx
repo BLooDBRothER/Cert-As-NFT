@@ -25,7 +25,7 @@ const columns = [
     sortable: false,
     headerClassName: "bg-accent",
     headerAlign: "center",
-    cellClassName: "!px-2 !justify-center",
+    cellClassName: "!px-2 !justify-center text-center",
     renderCell: (params) => {
       return (
         <span className=" whitespace-normal">{params.row.organization_name}</span>
@@ -198,21 +198,26 @@ const rows = [
 const StatusTable = () => {
 
   const [data, setData] = useState([]);
+  const [newData, setNewData] = useState(null);
   const [toShowAllData, setToShowAllData] = useState(false);
+  
   const pendingData = data.filter(d => d.status === "pending");
 
   const [notificationMsg, setNotificationMsg] = useNotification();
 
   useEffect(() => {
-    console.log('eff', data);
-  }, [data])
+    if(!newData) return;
+    setData([newData, ...data]);
+  }, [newData])
+
+  console.log('all', data);
 
   useEffect(() => {
     console.log("hi");
     socket?.on("sendPending", (socketData) => {
-      console.log(socketData);
-      setData([socketData, ...data]);
+      console.log([socketData, ...data]);
       const msg = `New Request from ${socketData.organization_name}`;
+      setNewData(socketData);
       setNotificationMsg(msg);
     });
     return () => {
@@ -249,13 +254,7 @@ const StatusTable = () => {
         }}
       />
       <Button handleClick={() => {
-        Notification.requestPermission().then((permission) => {
-          // If the user accepts, let's create a notification
-          if (permission === "granted") {
-            const notification = new Notification("Hi there!");
-            // …
-          }
-        });
+        setToShowAllData(!toShowAllData);
       }}
       handleCss="m-2"
       >

@@ -2,12 +2,19 @@ import React from 'react'
 import Button from '../../components/Button'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
+import { axiosUpdateStatus } from '../../data/axios';
 
 const ActionButton = ({data}) => {
 
-    const handleClick = (type) => {
+    const handleClick = async (type) => {
         console.log(type, data);
         data.status = type;
+        const bodyData = {
+          status: type,
+          id: data.id
+        }
+        const res = await axiosUpdateStatus(bodyData);
+        console.log(res);
     }
 
   return (
