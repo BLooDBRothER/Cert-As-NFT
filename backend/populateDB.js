@@ -67,7 +67,7 @@ function addOrganizationAndStatusData(){
         else {
             console.log('done');
         }
-        // All done, disconnect from database
+        // Disconnect from database
         mongoose.connection.close();
     });
 }

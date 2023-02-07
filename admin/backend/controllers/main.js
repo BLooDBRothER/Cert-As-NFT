@@ -1,4 +1,5 @@
 const Status = require("../model/status");
+const sendStatusMail = require("../utils/mail");
 
 exports.getStatusData = async (req, res) => {
   try {
@@ -43,6 +44,7 @@ exports.updateStatus = async (req, res) => {
         console.log(req.body)
         const upD = await Status.updateOne({_id: req.body.id}, {status: req.body.status});
         console.log(upD)
+        sendStatusMail(req.body.email, req.body.status, res);
         return res.status(200).json({"message": "Successfully updated"});
     }
     catch(error){
