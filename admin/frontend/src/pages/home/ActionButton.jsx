@@ -10,6 +10,7 @@ const ActionButton = ({data}) => {
         console.log(type, data);
         data.status = type;
         const bodyData = {
+          email: data.email,
           status: type,
           id: data.id
         }
