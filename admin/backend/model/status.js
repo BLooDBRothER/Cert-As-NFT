@@ -10,13 +10,9 @@ const Schema = mongoose.Schema;
 const statusSchema = new Schema(
     {
         organization_id: {
-            type: String,
-            unique: true,
-            require: 'Id is required',
-            trim: true
-        },
-        password: {
-            type: String
+            type: Schema.Types.ObjectId,
+            ref: "organization",
+            unique: true
         },
         status: {
             type: String,

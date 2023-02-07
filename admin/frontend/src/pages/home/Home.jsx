@@ -13,7 +13,7 @@ const Home = () => {
     {
       !user.isLoggedIn ?
         <div className='flex flex-col items-center justify-center gap-2 text-accent'>
-          <h1 className='mt-2'>Available Organization</h1>
+          <h1 className='mt-2 '>Available Organization</h1>
           <StatusTable />
         </div> :
         <Index />
