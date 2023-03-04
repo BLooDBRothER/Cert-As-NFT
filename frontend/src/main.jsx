@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Regsiter';
 import UserProvider from './context/User';
 import Verify from './pages/Verify';
+import MetaMaskProvider from './context/MetaMask';
 
 const router = createBrowserRouter([
   {
@@ -32,8 +33,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <UserProvider>
-      <RouterProvider router={router} />
-    </UserProvider>
+    <MetaMaskProvider>
+      <UserProvider>
+        <RouterProvider router={router} />
+      </UserProvider>
+    </MetaMaskProvider>
   </React.StrictMode>,
 )
