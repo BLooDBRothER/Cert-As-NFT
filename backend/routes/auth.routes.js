@@ -1,5 +1,5 @@
 var express = require('express');
-const { register, login, verifyMail, verifyLogin, resendMail, logout } = require('../controllers/auth');
+const { register, login, verifyMail, verifyLogin, resendMail, logout, checkWalletAddress } = require('../controllers/auth');
 const authenticate = require('../middleware/authenticate');
 const {validateRegister, validateLogin} = require('../middleware/validate');
 var router = express.Router();
@@ -21,5 +21,8 @@ router.get('/resend', resendMail);
 
 // GET logout
 router.get('/logout', authenticate, logout);
+
+// POST check-address
+router.post('/check-address', checkWalletAddress);
 
 module.exports = router;

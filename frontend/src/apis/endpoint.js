@@ -1,3 +1,5 @@
+import { axiosClient } from "../config.axios"
+
 const endpoint = {
     register: 'api/auth/register',
     login: 'api/auth/login',

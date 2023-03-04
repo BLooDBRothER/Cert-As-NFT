@@ -19,7 +19,7 @@ exports.register = async (req, res, next) => {
 
         if(organization) return res.status(409).json({"message": "organization already exist"})
         const data = req.body;
-        const newOrganization = new Organization({email: data.email, password: data.password, organization_name: data.organization_name, organization_id: data.organization_id, wallet_address: data.wallet_address, isVerified: false, status: 'pending'})
+        const newOrganization = new Organization({email: data.email, password: data.password, organization_name: data.organization_name, organization_id: data.organization_id, wallet_address: data.wallet_address.toLowerCase(), isVerified: false, status: 'pending'})
         
         const organization_ = await newOrganization.save();
 
@@ -91,7 +91,7 @@ exports.resendMail = async (req, res) => {
 // @method GET
 exports.verifyLogin = (req, res) => {
     console.log(req.user)
-    return res.status(200).send({message: "Logged in", email: req.user.email});
+    return res.status(200).send({message: "Logged in", email: req.user.email, address: req.user.address});
 }
 
 // @method POST
@@ -122,7 +122,7 @@ exports.login = async (req, res) => {
     
         res.cookie("jwt", jsonToken, {secure: true, sameSite:"none", httpOnly: true});
     
-        return res.status(200).send({"message": "Logged in successfully", email: organization.email}) 
+        return res.status(200).send({"message": "Logged in successfully", email: organization.email, address: organization.wallet_address}) 
     }
     catch (error){
         console.log(error);
@@ -131,7 +131,23 @@ exports.login = async (req, res) => {
 }
 
 // @route api/auth/logout
-exports.logout = async (req, res) => {
+exports.logout = (req, res) => {
     res.clearCookie("jwt");
     return res.status(200).json({"message": "Logged out"});
+}
+
+// @route api/auth/check-address
+exports.checkWalletAddress = async (req, res) => {
+    try{
+        const organization = await Organization.findOne({wallet_address: req.body.wallet_address});
+        console.log(req.body.wallet_address, organization)
+        if(organization){
+            return res.status(200).send({"message": true});
+        }
+        return res.status(200).send({"message": false})
+    }
+    catch (error){
+        console.log(error)
+        return res.status(200).json({"message": "Logged out"});
+    }
 }

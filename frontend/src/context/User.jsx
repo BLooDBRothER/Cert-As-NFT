@@ -12,7 +12,7 @@ const UserProvider = ({children}) => {
   async function checkLogin(){
     const res = await axiosCheckLogin();
     if(res.status === 200){
-      setUser({email: res.data.email, isLoggedIn: true});
+      setUser({email: res.data.email, address: res.data.address, isLoggedIn: true});
       return;
     }
     console.log(res);
@@ -23,7 +23,7 @@ const UserProvider = ({children}) => {
   }, [])
 
   async function login(data){
-    setUser({email: data.email, isLoggedIn: true});
+    setUser({email: data.email, address: data.address, isLoggedIn: true});
   }
 
   async function logout(){

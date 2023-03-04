@@ -20,7 +20,8 @@ const MetaMaskProvider = ({children}) => {
       const data = {
         wallet_address: address
       }
-      const res = axiosCheckWalletAddress(data)
+      const res = await axiosCheckWalletAddress(data)
+      console.log(res)
       setAccount({
         address,
         isOrganization: res.data.message

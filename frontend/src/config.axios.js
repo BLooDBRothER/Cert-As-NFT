@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const axiosClient = axios.create();
+export const axiosClient = axios.create();
 
 const baseURL = 'http://localhost:5000/'
 

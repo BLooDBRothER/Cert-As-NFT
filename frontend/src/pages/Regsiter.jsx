@@ -12,9 +12,8 @@ import ArticleIcon from '@mui/icons-material/Article';
 import Button from '../components/Button';
 import { useUser } from '../context/User';
 import Resend from '../components/Resend';
-import { axiosSendMail } from '../axios';
 import Header from '../components/Header';
-import { axiosRegister } from '../apis/endpoint';
+import { axiosRegister, axiosSendMail } from '../apis/endpoint';
 
 const Register = () => {
 

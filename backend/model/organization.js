@@ -67,12 +67,11 @@ organizationSchema.methods.comparePassword = function(password){
 }
 
 organizationSchema.methods.generateJwt = function(){
-    const now = new Date();
-    const expiration = new Date();
 
     let payload = {
         id: this._id,
         email: this.email,
+        address: this.wallet_address
     }
     console.log(payload);
 

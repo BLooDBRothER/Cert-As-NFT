@@ -9,9 +9,8 @@ import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
 import Button from '../components/Button';
 import Resend from '../components/Resend';
 import { useUser } from '../context/User';
-import { axiosSendMail } from '../axios';
 import Header from '../components/Header';
-import { axiosLogin } from '../apis/endpoint';
+import { axiosLogin, axiosSendMail } from '../apis/endpoint';
 
 const Login = () => {
 
@@ -48,7 +47,7 @@ const Login = () => {
         }
         const res = await axiosLogin(data);
         if(res.status === 200){
-            login({email: data.email})
+            login({email: data.email, address: res.data.address})
         }
         if(res.status === 401){
             setReminigTime(res.data.resend_time);

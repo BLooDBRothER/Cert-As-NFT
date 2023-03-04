@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Alert, CircularProgress } from '@mui/material';
-import { axiosVerify } from '../axios';
 import Header from '../components/Header';
+import { axiosVerify } from '../apis/endpoint';
 
 const Verify = () => {
     const params = new URLSearchParams(window.location.search);

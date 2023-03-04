@@ -53,7 +53,7 @@ const Header = ({ showWallet = false }) => {
         <header className='bg-secondary text-primary flex justify-between items-center p-4 h-[80px] border-b'>
             <NavLink to="/"><h1>YOUR CERTIFICATE</h1></NavLink>
             <div className='flex items-center justify-center gap-3'>
-                {showWallet && (account ? <Button onClick={logoutMetaMask} handleCss=" text-ellipsis w-[200px] whitespace-nowrap overflow-hidden">{account}</Button> : <Button handleCss='flex items-center' onClick={web3Handler}>Connect Wallet <span><img className='mx-2' width={25} src={metamaskIc} /></span></Button>)}
+                {showWallet && (account.address ? <Button onClick={logoutMetaMask} handleCss=" text-ellipsis w-[200px] whitespace-nowrap overflow-hidden">{account.address}</Button> : <Button handleCss='flex items-center' onClick={web3Handler}>Connect Wallet <span><img className='mx-2' width={25} src={metamaskIc} /></span></Button>)}
                 {user.isLoggedIn &&
                     <>
                         <Avatar {...stringAvatar(user.email)} aria-controls={open ? 'basic-menu' : undefined}
