@@ -5,6 +5,7 @@ import Avatar from '@mui/material/Avatar';
 import { NavLink } from 'react-router-dom';
 import { useUser } from '../context/User';
 import { Menu, MenuItem } from '@mui/material';
+import { useMetaMask } from '../context/MetaMask';
 
 function stringToColor(string) {
     let hash = 0;
@@ -37,6 +38,8 @@ function stringAvatar(name) {
 const Header = ({ showWallet = false }) => {
     const { user, logout } = useUser();
 
+    const {web3Handler, account, logoutMetaMask} = useMetaMask();
+    console.log(account)
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -50,7 +53,7 @@ const Header = ({ showWallet = false }) => {
         <header className='bg-secondary text-primary flex justify-between items-center p-4 h-[80px] border-b'>
             <NavLink to="/"><h1>YOUR CERTIFICATE</h1></NavLink>
             <div className='flex items-center justify-center gap-3'>
-                {showWallet && <Button handleCss='flex items-center' >Connect Wallet <span><img className='mx-2' width={25} src={metamaskIc} /></span></Button>}
+                {showWallet && (account ? <Button onClick={logoutMetaMask} handleCss=" text-ellipsis w-[200px] whitespace-nowrap overflow-hidden">{account}</Button> : <Button handleCss='flex items-center' onClick={web3Handler}>Connect Wallet <span><img className='mx-2' width={25} src={metamaskIc} /></span></Button>)}
                 {user.isLoggedIn &&
                     <>
                         <Avatar {...stringAvatar(user.email)} aria-controls={open ? 'basic-menu' : undefined}

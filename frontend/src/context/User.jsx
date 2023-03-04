@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useEffect, useState} from 'react'
-import { axiosCheckLogin, axiosLogin, axiosLogout, axiosRegister } from '../axios';
+import { axiosCheckLogin, axiosLogout } from '../apis/endpoint';
 
 const userContext = createContext({});
 
@@ -23,16 +23,7 @@ const UserProvider = ({children}) => {
   }, [])
 
   async function login(data){
-    const res = await axiosLogin(data);
-    if(res.status === 200){
-      setUser({email: res.data.email, isLoggedIn: true});
-    }
-    return res;
-  }
-
-  async function register(data){
-    const res = await axiosRegister(data);
-    return res;
+    setUser({email: data.email, isLoggedIn: true});
   }
 
   async function logout(){
@@ -47,7 +38,6 @@ const UserProvider = ({children}) => {
       {
         user,
         login,
-        register,
         logout
       }
     }

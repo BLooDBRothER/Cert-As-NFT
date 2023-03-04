@@ -11,6 +11,7 @@ import Resend from '../components/Resend';
 import { useUser } from '../context/User';
 import { axiosSendMail } from '../axios';
 import Header from '../components/Header';
+import { axiosLogin } from '../apis/endpoint';
 
 const Login = () => {
 
@@ -45,7 +46,10 @@ const Login = () => {
             email,
             password
         }
-        const res = await login(data);
+        const res = await axiosLogin(data);
+        if(res.status === 200){
+            login({email: data.email})
+        }
         if(res.status === 401){
             setReminigTime(res.data.resend_time);
             return
@@ -56,8 +60,8 @@ const Login = () => {
                 setAlert('')
             }, 5000);
         }
-        if(res)
-            console.log(res);
+        // if(res)
+        //     console.log(res);
     }
 
     useEffect(() => {

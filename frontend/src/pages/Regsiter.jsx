@@ -14,10 +14,11 @@ import { useUser } from '../context/User';
 import Resend from '../components/Resend';
 import { axiosSendMail } from '../axios';
 import Header from '../components/Header';
+import { axiosRegister } from '../apis/endpoint';
 
 const Register = () => {
 
-    const {user, register} = useUser();
+    const {user} = useUser();
 
     const navigate = useNavigate();
 
@@ -48,7 +49,7 @@ const Register = () => {
             wallet_address: walletAddr,
             organization_id: orgId
         }
-        const res = await register(data);
+        const res = await axiosRegister(data);
         console.log(res);
         if(res.status === 200){
             console.log(res.data.resend_time)
