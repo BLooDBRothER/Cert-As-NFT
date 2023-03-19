@@ -91,6 +91,9 @@ exports.resendMail = async (req, res) => {
 // @method GET
 exports.verifyLogin = (req, res) => {
     console.log(req.user)
+    if(!req.user)
+        return res.status()
+    res.set('Cache-control', `no-store`)
     return res.status(200).send({message: "Logged in", email: req.user.email, address: req.user.address});
 }
 

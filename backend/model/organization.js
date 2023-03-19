@@ -27,8 +27,11 @@ const organizationSchema = new Schema(
             trim: true,
             unique: true
         },
-        phone:{
-            type: Number
+        organization_logo: {
+            type: String,
+        },
+        link:{
+            type: String
         },
         wallet_address:{
             type: String,

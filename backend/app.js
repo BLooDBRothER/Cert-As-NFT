@@ -17,8 +17,6 @@ initPassport(passport, process.env.JWT_SECRET)
 
 initMongo(mongoose, process.env.MONGO_URI);
 
-const authRouter = require('./routes/auth.routes');
-
 const app = express();
 
 const corsOptions = {
@@ -34,6 +32,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// serve static image
+app.use('/logo', express.static('public/logos'))
+
+const authRouter = require('./routes/auth');
 app.use('/api/auth', authRouter);
+
+const settingProfileRouter = require('./routes/profile');
+app.use('/api/setting/profile', settingProfileRouter);
 
 module.exports = app;
