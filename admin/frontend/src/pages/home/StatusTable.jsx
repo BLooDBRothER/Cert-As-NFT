@@ -198,26 +198,16 @@ const rows = [
 const StatusTable = () => {
 
   const [data, setData] = useState([]);
-  const [newData, setNewData] = useState(null);
   const [toShowAllData, setToShowAllData] = useState(false);
-  
+
   const pendingData = data.filter(d => d.status === "pending");
 
   const [notificationMsg, setNotificationMsg] = useNotification();
 
   useEffect(() => {
-    if(!newData) return;
-    setData([newData, ...data]);
-  }, [newData])
-
-  console.log('all', data);
-
-  useEffect(() => {
-    console.log("hi");
     socket?.on("sendPending", (socketData) => {
-      console.log([socketData, ...data]);
       const msg = `New Request from ${socketData.organization_name}`;
-      setNewData(socketData);
+      setData(prev => [socketData, ...prev])
       setNotificationMsg(msg);
     });
     return () => {
