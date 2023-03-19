@@ -9,6 +9,13 @@ const endpoint = {
     checkAddress: 'api/auth/check-address'
 }
 
+const settingEndpoint = {
+    profile: 'api/setting/profile',
+    updateProfile: 'api/setting/profile/update',
+    uploadProfile: 'api/setting/profile/upload',
+    removeProfile: 'api/setting/profile/delete'
+}
+
 
 function returnResp(res) {
     return { status: res.status, data: res.data };
@@ -29,9 +36,11 @@ export async function axiosCheckLogin() {
 
 export async function axiosLogin(payload) {
     try {
+        console.log('in');
         const res = await axiosClient.post(endpoint.login, payload, {
             withCredentials: true,
         });
+        console.log(res);
         return returnResp(res);
     } catch (errRes) {
         return returnResp(errRes.response);
@@ -86,5 +95,58 @@ export async function axiosCheckWalletAddress(payload){
         return returnResp(res);
     } catch (errRes) {
         return returnResp(errRes.response);
+    }
+}
+
+// * setting endpoint
+
+export async function axiosGetProfile(){
+    try{
+        const res = await axiosClient.get(settingEndpoint.profile, {
+            withCredentials: true,
+        })
+        return returnResp(res)
+    }
+    catch(err){
+        return returnResp(err.response);
+    }
+}
+
+export async function axiosUpdateProfile(payload){
+    try{
+        const res = await axiosClient.post(settingEndpoint.updateProfile, payload, {
+            withCredentials: true,
+        })
+        return returnResp(res)
+    }
+    catch(err){
+        return returnResp(err.response);
+    }
+}
+
+export async function axiosUploadProfile(payload){
+    try{
+        const res = await axiosClient.post(settingEndpoint.uploadProfile, payload, {
+            withCredentials: true,
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+        return returnResp(res);
+    }
+    catch(err){
+        return returnResp(err.response);
+    }
+}
+
+export async function axiosRemoveProfile(payload){
+    try{
+        const res = await axiosClient.post(settingEndpoint.removeProfile, payload, {
+            withCredentials: true,
+        });
+        return returnResp(res);
+    }
+    catch(err){
+        return returnResp(err.response);
     }
 }
