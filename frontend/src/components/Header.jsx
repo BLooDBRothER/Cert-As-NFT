@@ -2,7 +2,7 @@ import React from 'react'
 import Button from './Button';
 import metamaskIc from '../assets/metamask-icon.svg'
 import Avatar from '@mui/material/Avatar';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { useUser } from '../context/User';
 import { Menu, MenuItem } from '@mui/material';
 import { useMetaMask } from '../context/MetaMask';
@@ -39,7 +39,6 @@ const Header = ({ showWallet = false }) => {
     const { user, logout } = useUser();
 
     const {web3Handler, account, logoutMetaMask} = useMetaMask();
-    console.log(account)
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -53,6 +52,8 @@ const Header = ({ showWallet = false }) => {
         <header className='bg-secondary text-primary flex justify-between items-center p-4 h-[80px] border-b'>
             <NavLink to="/"><h1>YOUR CERTIFICATE</h1></NavLink>
             <div className='flex items-center justify-center gap-3'>
+                {user.isLoggedIn && account.address && <Link to='/mint' className=' text-accent hover:text-primary mx-1 text-xl nav-link'>Mint</Link>}
+                {user.isLoggedIn && account.address && <Link to='/mint' className=' text-accent hover:text-primary mx-1 text-xl'>Mint</Link>}
                 {showWallet && (account.address ? <Button onClick={logoutMetaMask} handleCss=" text-ellipsis w-[200px] whitespace-nowrap overflow-hidden">{account.address}</Button> : <Button handleCss='flex items-center' onClick={web3Handler}>Connect Wallet <span><img className='mx-2' width={25} src={metamaskIc} /></span></Button>)}
                 {user.isLoggedIn &&
                     <>
@@ -75,7 +76,7 @@ const Header = ({ showWallet = false }) => {
                             }}
                             
                         >
-                            <MenuItem className='hover:!bg-primary hover:!text-secondary' onClick={handleClose}>Profile</MenuItem>
+                            <MenuItem className='hover:!bg-primary hover:!text-secondary' onClick={handleClose}><Link to='/setting/personal'>Setting</Link></MenuItem>
                             <MenuItem className='hover:!bg-primary hover:!text-secondary' onClick={logout}>Logout</MenuItem>
                         </Menu>
                     </>

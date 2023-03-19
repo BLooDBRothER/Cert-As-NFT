@@ -109,7 +109,7 @@ const Register = () => {
     return (
         <>
         <Header />
-        <div className="auth-cnt flex items-center justify-center">
+        <div className="form-cnt">
           {!reminingTime ?
             <form className='p-4 bg-secondary-lg rounded-lg text-2xl flex flex-col gap-5 mt-4 register-form' onSubmit={signup}>
                 <div className='text-accent flex gap-2 justify-center items-center pb-2 border-b border-primary'>
@@ -129,7 +129,7 @@ const Register = () => {
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton tabIndex={-1} >
-                                        {<CorporateFareIcon className='text-primary' />}
+                                        <CorporateFareIcon className='text-primary' />
                                     </IconButton>
                                 </InputAdornment>
                             }

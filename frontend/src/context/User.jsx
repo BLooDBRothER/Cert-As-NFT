@@ -19,6 +19,7 @@ const UserProvider = ({children}) => {
   }
 
   useEffect(() => {
+    console.log(user)
     checkLogin();
   }, [])
 

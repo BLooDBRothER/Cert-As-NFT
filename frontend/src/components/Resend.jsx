@@ -45,7 +45,7 @@ const Resend = ({ time, onComplete }) => {
             <p>Please Verify the email</p>
             {
                 timeStr === '' ?
-                    <Button handleClick={onComplete}>Resend</Button> :
+                    <Button onClick={onComplete}>Resend</Button> :
                     <div className=' text-center'>
                         <div className=' bg-accent rounded-lg px-2'>{timeStr}</div>
                     </div>

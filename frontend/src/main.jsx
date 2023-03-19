@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Children } from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
@@ -11,11 +11,17 @@ import Register from './pages/Regsiter';
 import UserProvider from './context/User';
 import Verify from './pages/Verify';
 import MetaMaskProvider from './context/MetaMask';
+import Mint from './pages/mint';
+import Profile from './pages/profile';
+import Personal from './pages/profile/Personal';
+import Course from './pages/profile/Course';
+import Security from './pages/profile/Security';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    
   },
   {
     path: 'login',
@@ -28,6 +34,37 @@ const router = createBrowserRouter([
   {
     path: "/verify",
     element: <Verify />
+  },
+  {
+    path: "/mint",
+    element: <Mint />
+  },
+  {
+    path: "/setting",
+    element: <Profile />,
+    children:[
+      {
+        path: "personal",
+        element: <Personal />,
+        handle: {
+          idx : 0
+        }
+      },
+      {
+        path: "course",
+        element: <Course />,
+        handle: {
+          idx : 1
+        }
+      },
+      {
+        path: "security",
+        element: <Security />,
+        handle: {
+          idx : 2
+        }
+      },
+    ]
   }
 ]);
 

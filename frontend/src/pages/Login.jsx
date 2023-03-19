@@ -73,7 +73,7 @@ const Login = () => {
     return (
         <>
         <Header />
-        <div className="auth-cnt flex items-center justify-center">
+        <div className="form-cnt">
             {
                 !reminingTime ?
                     <div className='relative'>
