@@ -4,6 +4,7 @@ import { useUser } from '../../context/User'
 import Index from './Index';
 import { useMetaMask } from '../../context/MetaMask';
 import { useNavigate } from 'react-router-dom';
+import ShowCertificate from './ShowCertificate';
 
 const Home = () => {
   const {user} = useUser();
@@ -36,6 +37,7 @@ const Home = () => {
     <Header showWallet />
     {message && <div>{message}</div>}
     {!user.isLoggedIn && !account.address && <Index />}
+    {!user.isLoggedIn && account.address && <ShowCertificate />}
     </>
   )
 }
