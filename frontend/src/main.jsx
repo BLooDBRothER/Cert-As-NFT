@@ -1,4 +1,4 @@
-import React, { Children } from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
@@ -16,6 +16,7 @@ import Profile from './pages/profile';
 import Personal from './pages/profile/Personal';
 import Course from './pages/profile/Course';
 import Security from './pages/profile/Security';
+import Certificate from './pages/certificate';
 
 const router = createBrowserRouter([
   {
@@ -65,6 +66,10 @@ const router = createBrowserRouter([
         }
       },
     ]
+  },
+  {
+    path: "certificate/:nft_address",
+    element: <Certificate />
   }
 ]);
 

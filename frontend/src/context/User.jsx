@@ -12,7 +12,7 @@ const UserProvider = ({children}) => {
   async function checkLogin(){
     const res = await axiosCheckLogin();
     if(res.status === 200){
-      setUser({email: res.data.email, address: res.data.address, isLoggedIn: true});
+      setUser({...res.data, isLoggedIn: true});
       return;
     }
     console.log(res);
@@ -24,7 +24,7 @@ const UserProvider = ({children}) => {
   }, [])
 
   async function login(data){
-    setUser({email: data.email, address: data.address, isLoggedIn: true});
+    setUser({...data, isLoggedIn: true});
   }
 
   async function logout(){
@@ -34,10 +34,15 @@ const UserProvider = ({children}) => {
     }
   }
 
+  function updateCourse(courseData){
+    setUser(prev => ({...prev, course: courseData}));
+  }
+
   return (
     <userContext.Provider value={
       {
         user,
+        updateCourse,
         login,
         logout
       }

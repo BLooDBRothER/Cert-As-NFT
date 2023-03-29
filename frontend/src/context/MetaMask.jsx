@@ -7,6 +7,7 @@ import NFTAbi from '../contractsData/NFT.json'
 import NFTAddress from '../contractsData/NFT-address.json'
 import { client } from "../config.ipfs";
 import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
 
 const metaMaskContext = createContext({});
 
@@ -29,18 +30,9 @@ const MetaMaskProvider = ({ children }) => {
         msg: ''
     });
 
-    // function test(){
-    //     setMessage({...message, activeStep:0});
-    //     setTimeout(() => {
-    //         setMessage({...message, activeStep:1})
-    //     }, 2000)
-    //     setTimeout(() => {
-    //         setMessage({...message, activeStep:2, code: 1})
-    //     }, 5000)
-    //     // setTimeout(() => {
-    //     //     setMessage({...message, activeStep: 3})
-    //     // }, 7000)
-    // }
+    const [selectedCertificate, setSelectedCertificate] = useState();
+
+    const isAllSet = marketplace && nft;
 
     const loadContracts = async (signer) => {
         console.log(signer);
@@ -75,76 +67,71 @@ const MetaMaskProvider = ({ children }) => {
 
     async function transferCertificate(result, address) {
         // * Inititaing process
-        // const itemCount = await marketplace.itemCount()
-        // console.log(itemCount)
-        // console.log('1st')
         const uri = `https://ipfs.io/ipfs/${result.path}`
         // * mint nft 
         setMessage({...message, activeStep:1});
-        // console.log('2nd');
         await (await nft.mint(uri)).wait()
-        // get tokenId of new nft 
-        // console.log('3nd');
-        // setMessage('Approving');
         // * Aprroving
         setMessage({...message, activeStep:2});
         const id = await nft.tokenCount()
-        console.log(id)
         // approve marketplace to spend nft
-        await (await nft.setApprovalForAll(marketplace.address, true)).wait()
-        // console.log('approved');
-        // setMessage('Getting to your Address');
+        await (await nft.setApprovalForAll(marketplace.address, true)).wait();
         // * Making and transferring
         setMessage({...message, activeStep:3});
         // add nft to marketplace
         await (await marketplace.makeCertificate(nft.address, id, address)).wait();
-        console.log('certificate made');
-        // await (await marketplace.transferItem(id, address)).wait();
-        console.log('transferred');
         setMessage('Received NFT');
         setMessage({...message, activeStep:4, isCompleted: true});
         const itemCount2 = await marketplace.itemCount()
-        console.log(itemCount2)
     }
 
-    const loadPurchasedItems = async (accountAddress) => {
-        setCertificate([]);
-        setLoading(true);
-        if(!marketplace || !nft) return;
-        console.log(marketplace, nft)
-        const itemCount = await marketplace.itemCount()
-        console.log(itemCount)
-        let listedItems = []
-        let soldItems = []
-        console.log('in', marketplace)
-        // Fetch purchased items from marketplace by quering Offered events with the buyer set as the user
-        const filter = marketplace.filters.certSold(null, null, null, null, account.address)
-        console.log(filter)
+    const getSingleCertificate = async (nft_address) => {
+        if(!marketplace || !nft_address) return null;
+        console.log(selectedCertificate)
+        const filter = marketplace.filters.certSold(selectedCertificate, null, null, null, null)
         const results = await marketplace.queryFilter(filter)
         console.log(results);
-        // Fetch metadata of each nft and add that to listedItem object.
         const purchases = await Promise.all(results.map(async i => {
-            // fetch arguments from each result
             i = i.args
-            console.log('here', i);
-            // get uri url from nft contract
+            console.log(i)
             const uri = await nft.tokenURI(i.tokenId)
-            // use uri to fetch the nft metadata stored on ipfs 
             console.log(uri);
             const response = await axios(uri)
             console.log(response)
             const metadata = response.data;
             let purchasedItem = {
                 itemId: i.itemId,
-                name: metadata.name,
-                ipfs_link: metadata.ipfs_link
+                ...metadata
             }
             return purchasedItem
         }))
-        console.log(purchases)
+        return results.length ? purchases : null;
+    } 
+
+    const loadPurchasedItems = async (accountAddress) => {
+        setCertificate([]);
+        setLoading(true);
+        if(!marketplace || !nft) return;
+        const filter = marketplace.filters.certSold(null, null, null, null, account.address)
+        const results = await marketplace.queryFilter(filter)
+        const purchases = await Promise.all(results.map(async i => {
+            i = i.args
+            console.log(i)
+            const uri = await nft.tokenURI(i.tokenId)
+            console.log(uri);
+            const response = await axios(uri)
+            console.log(response)
+            const metadata = response.data;
+            console.log(metadata);
+            let purchasedItem = {
+                itemId: i.itemId,
+                nft: i.nft,
+                ...metadata
+            }
+            return purchasedItem
+        }))
         setCertificate(purchases);
         setLoading(false);
-        // console.log(purchases);
     }
 
     async function checkOrganizationWalletAddress(address) {
@@ -194,8 +181,12 @@ const MetaMaskProvider = ({ children }) => {
                 message,
                 createNFT,
                 loadPurchasedItems,
+                getSingleCertificate,
                 loading,
-                certificate
+                certificate,
+                isAllSet,
+                selectedCertificate,
+                setSelectedCertificate
             }}
         >
             {children}

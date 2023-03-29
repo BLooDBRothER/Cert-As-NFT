@@ -45,9 +45,10 @@ const Login = () => {
             email,
             password
         }
+        console.log(data)
         const res = await axiosLogin(data);
         if(res.status === 200){
-            login({email: data.email, address: res.data.address})
+            login(res.data)
         }
         if(res.status === 401){
             setReminigTime(res.data.resend_time);

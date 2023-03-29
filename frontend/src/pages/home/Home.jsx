@@ -25,9 +25,10 @@ const Home = () => {
       setMessage("Please connect to the metamask wallet")
       return;
     }
-    console.log(user)
-    if(user.isLoggedIn && account.address !== user.address){
+    console.log(user, account)
+    if(user.isLoggedIn && !account.isOrganization){
       setMessage("Seems to be wrong address")
+      return;
     }
     setMessage("");
   }, [account, user.isLoggedIn])

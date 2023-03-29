@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Box, Divider, FormControl, InputAdornment, ListItemIcon, ListItemText, Menu, MenuItem, MenuList, Paper, TextField } from '@mui/material';
+import { Box, Divider, FormControl, InputAdornment, ListItemIcon, ListItemText, MenuItem, MenuList, TextField } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
@@ -20,6 +20,7 @@ const Personal = () => {
   });
 
   const [newLink, setNewLink] = useState('');
+
 
   const fileInputRef = useRef();
 
@@ -63,6 +64,15 @@ const Personal = () => {
   }
 
   useEffect(() => {
+    console.log('link');
+  }, [newLink]);
+  useEffect(() => {
+    console.log('person');
+  }, [personalData]);
+
+
+  useEffect(() => {
+    console.log('once')
     getProfile();
   }, []);
 
@@ -86,7 +96,7 @@ const Personal = () => {
                       </InputAdornment>
                     ),
                   }}
-                  readOnly
+                  onChange={(e) => {setPersonalData(prev => ({...prev, organization_name: e.target.value}))}}
                   value={personalData.email}
                   variant="outlined"
                 />

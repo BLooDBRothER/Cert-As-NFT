@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header'
 import WorkspacePremiumIcon from '@mui/icons-material/WorkspacePremium';
-import { FormControl, InputLabel, Input, InputAdornment, IconButton, Alert, Paper, Skeleton, Backdrop, Box, Stepper, Step, StepButton, StepLabel } from '@mui/material';
+import { FormControl, InputLabel, Input, InputAdornment, IconButton, Alert, MenuItem, Select, Paper, Skeleton, Backdrop, Box, Stepper, Step, StepButton, StepLabel } from '@mui/material';
 import { Buffer } from "buffer";
 import Button from '../../components/Button';
 import { client } from '../../config.ipfs';
 import { useMetaMask } from '../../context/MetaMask';
 import { useUser } from '../../context/User';
 import { useNavigate } from 'react-router-dom';
+import cert_img from '../../assets/c++.png'
 
 const steps = ["Creating NFT data", "Minting Certificate as NFT", "Approve the Certificate", "Transferring Certificate"]
 
@@ -31,34 +32,45 @@ const Mint = () => {
     name: '',
     address: '',
     file: '',
-    ipfs_link: ''
+    ipfs_link: '',
+    course: user.course || []
   });
+  const [courseSelected, setCourseSelected] = useState('');
   const [uploading, setUploading] = useState(false);
-  const [showStepper, setShowStepper] = useState(false)
+  const [showStepper, setShowStepper] = useState(false);
+
+  const [tempfile, setTempFile] = useState(null);
+
+  console.log('course selected - ', courseSelected)
 
   const [fileMsg, setFileMsg] = useState("Please Select File");
 
   const uploadFile = async (e) => {
     e.preventDefault();
-    const file = e.target.files[0];
-    if(!file){
-      return;
-    }
-    setFileMsg("Uploading File ....")
-    setUploading(false)
-    setInputObj({...inputObj, file: e.target.files})
-    console.log('hi');
-    try {
-      const result = await client.add(file)
-      console.log(result)
-      setInputObj({...inputObj, ipfs_link: `https://ipfs.io/ipfs/${result.path}`});
-      // setImage(`https://ipfs.io/ipfs/${result.path}`);
-      setUploading(true);
-      setFileMsg("File uploaded Successfully");
-    } catch (error) {
-      setFileMsg("Error in File Uploading");
-      console.log("ipfs image upload error: ", error)
-    }
+    // const file = e.target.files[0];
+    // if(!file){
+    //   return;
+    // }
+    // setFileMsg("Uploading File ....")
+    // setUploading(false)
+    // setInputObj({...inputObj, file: e.target.files})
+    // console.log('hi');
+    // try {
+    //   const result = await client.add(file)
+    //   console.log(result)
+    //   setInputObj({...inputObj, ipfs_link: `https://ipfs.io/ipfs/${result.path}`});
+    //   // setImage(`https://ipfs.io/ipfs/${result.path}`);
+    //   setUploading(true);
+    //   setFileMsg("File uploaded Successfully");
+    // } catch (error) {
+    //   setFileMsg("Error in File Uploading");
+    //   console.log("ipfs image upload error: ", error)
+    // }
+    setTimeout(() => {
+      console.log('in')
+      setTempFile(cert_img)
+      setUploading(true)
+    }, [2000])
 }
 
 
@@ -67,7 +79,14 @@ const Mint = () => {
     setShowStepper(true);
     const dataObj = {
       name: inputObj.name,
-      ipfs_link: inputObj.ipfs_link
+      // ipfs_link: inputObj.ipfs_link,
+      ipfs_link: "http://localhost:5000/logo/13979b78-1887-4c89-ba01-0d9b863ce7de-1679904943236.jpg",
+      course: courseSelected,
+      org_email: user.email,
+      org_name: user.organization_name,
+      org_logo: user.organization_logo,
+      org_link: user.link
+
     }
     createNFT(dataObj, inputObj.address);
   }
@@ -108,6 +127,24 @@ const Mint = () => {
                   </FormControl>
                 </div>
                 <div>
+                  <FormControl sx={{ m: 1, width: 'clamp(20ch, 50vw, 25ch)' }} variant='standard'>
+                    <InputLabel id="demo-simple-select-label" sx={{ color: '#EEE' }}>Course</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label="Course"
+                      variant='standard'
+                      value={courseSelected}
+                      onChange={(e) => {setCourseSelected(e.target.value)}}
+                      sx={{ color: '#EEE' }}
+                    >
+                      {inputObj.course.map(course => (
+                        <MenuItem key={course} value={course}>{course}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+                <div>
                   <FormControl sx={{ m: 1, width: 'clamp(20ch, 50vw, 25ch)' }} variant="standard">
                       <Input
                           id="standard-adornment-file"
@@ -127,14 +164,14 @@ const Mint = () => {
                     !uploading ?
                       <>
                         <Skeleton width="100%" height={200} />
-                        <Skeleton><a href={inputObj.ipfs_link}> <Button>IPFS LINK</Button></a></Skeleton>
+                        {/* <Skeleton><a href={inputObj.ipfs_link}> <Button>IPFS LINK</Button></a></Skeleton> */}
                       </>
                       :
                       <>
                         <div className='w-full h-[200px] bg-transparent'>
-                          {inputObj.ipfs_link && <img className='w-full h-[200px]' src={inputObj.ipfs_link} />}
+                          {tempfile && <img className='w-full h-[200px]' src={cert_img} />}
                         </div>
-                        <a href={inputObj.ipfs_link} target='_blank'> <Button>IPFS LINK</Button></a>
+                        {/* <a href={inputObj.ipfs_link} target='_blank'> <Button>IPFS LINK</Button></a> */}
                       </>
                   }
                 </Paper>
@@ -159,3 +196,10 @@ const Mint = () => {
 }
 
 export default Mint
+
+{/* <>
+                        <div className='w-full h-[200px] bg-transparent'>
+                          {inputObj.ipfs_link && <img className='w-full h-[200px]' src={cert_img} />}
+                        </div>
+                        <a href={inputObj.ipfs_link} target='_blank'> <Button>IPFS LINK</Button></a>
+                      </> */}

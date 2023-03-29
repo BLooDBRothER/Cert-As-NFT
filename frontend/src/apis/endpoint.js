@@ -13,7 +13,9 @@ const settingEndpoint = {
     profile: 'api/setting/profile',
     updateProfile: 'api/setting/profile/update',
     uploadProfile: 'api/setting/profile/upload',
-    removeProfile: 'api/setting/profile/delete'
+    removeProfile: 'api/setting/profile/delete',
+    getCourse: 'api/setting/course',
+    updateCourse: 'api/setting/course/update'
 }
 
 
@@ -145,6 +147,30 @@ export async function axiosRemoveProfile(payload){
             withCredentials: true,
         });
         return returnResp(res);
+    }
+    catch(err){
+        return returnResp(err.response);
+    }
+}
+
+export async function axiosGetCourse(){
+    try{
+        const res = await axiosClient.get(settingEndpoint.getCourse, {
+            withCredentials: true
+        });
+        return returnResp(res)
+    }
+    catch(err){
+        return returnResp(err.response);
+    }
+}
+
+export async function axiosUpdateCourse(payload){
+    try{
+        const res = await axiosClient.post(settingEndpoint.updateCourse, payload, {
+            withCredentials: true,
+        })
+        return returnResp(res)
     }
     catch(err){
         return returnResp(err.response);

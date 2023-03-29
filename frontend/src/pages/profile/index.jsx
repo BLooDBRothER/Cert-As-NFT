@@ -101,7 +101,7 @@ const Profile = () => {
                     <h2 className='text-2xl pt-3'>{listItems[selectedItem].text}</h2>
                     <div>
                         <div className=' opacity-70'>{listItems[selectedItem].subText}</div>
-                        <div className=' min-h-[calc(100vh-240px)] bg-secondary-lg p-4 my-2 rounded-lg text-2xl'>
+                        <div className=' min-h-[calc(100vh-240px)] bg-secondary-lg p-4 my-2 rounded-lg text-2xl '>
                             <Outlet />
                         </div>
                     </div>
