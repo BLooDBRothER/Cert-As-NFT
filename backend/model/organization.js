@@ -30,6 +30,9 @@ const organizationSchema = new Schema(
         organization_logo: {
             type: String,
         },
+        course: {
+            type: Array
+        },
         link:{
             type: String
         },
@@ -66,6 +69,7 @@ organizationSchema.methods.canResend = function(){
 }
 
 organizationSchema.methods.comparePassword = function(password){
+    console.log(password, this.password)
     return bcrypt.compareSync(password, this.password);
 }
 

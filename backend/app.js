@@ -39,6 +39,8 @@ const authRouter = require('./routes/auth');
 app.use('/api/auth', authRouter);
 
 const settingProfileRouter = require('./routes/profile');
+const settingCourseRouter = require('./routes/course');
 app.use('/api/setting/profile', settingProfileRouter);
+app.use('/api/setting/course', settingCourseRouter);
 
 module.exports = app;

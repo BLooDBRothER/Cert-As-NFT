@@ -89,12 +89,12 @@ exports.resendMail = async (req, res) => {
 // @route api/auth/login
 
 // @method GET
-exports.verifyLogin = (req, res) => {
-    console.log(req.user)
+exports.verifyLogin = async (req, res) => {
     if(!req.user)
         return res.status()
+    const organization = await Organization.findOne({_id: req.user.id}).select({_id: 0, organization_name: 1, email: 1, organization_logo: 1, course: 1, link: 1, wallet_address: 1});
     res.set('Cache-control', `no-store`)
-    return res.status(200).send({message: "Logged in", email: req.user.email, address: req.user.address});
+    return res.status(200).send(organization);
 }
 
 // @method POST
@@ -124,8 +124,17 @@ exports.login = async (req, res) => {
         console.log(jsonToken);
     
         res.cookie("jwt", jsonToken, {secure: true, sameSite:"none", httpOnly: true});
+
+        const resData = {
+            organization_name: organization.organization_name,
+            email: organization.email,
+            organization_logo: organization.organization_logo,
+            course: organization.course,
+            link: organization.link,
+            wallet_address: organization.wallet_address
+        }
     
-        return res.status(200).send({"message": "Logged in successfully", email: organization.email, address: organization.wallet_address}) 
+        return res.status(200).send(resData) 
     }
     catch (error){
         console.log(error);
