@@ -9,7 +9,7 @@ async function main() {
   const NFT = await ethers.getContractFactory("NFT");
   const Marketplace = await ethers.getContractFactory("Marketplace");
   // deploy contracts
-  const marketplace = await Marketplace.deploy(1);
+  const marketplace = await Marketplace.deploy();
   const nft = await NFT.deploy();
   const txHash = nft.deployTransaction.hash
   const txReceipt = await ethers.provider.waitForTransaction(txHash)

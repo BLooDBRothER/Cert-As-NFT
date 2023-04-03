@@ -13,18 +13,7 @@ import "hardhat/console.sol";
 contract Marketplace is ReentrancyGuard {
 
     // Variables
-    address payable public immutable feeAccount; // the account that receives fees
-    uint public immutable feePercent; // the fee percentage on sales 
     uint public itemCount; 
-
-    struct Item {
-        uint itemId;
-        IERC721 nft;
-        uint tokenId;
-        uint price;
-        address payable seller;
-        bool sold;
-    }
 
     struct Certificate {
         uint itemId;
@@ -32,10 +21,10 @@ contract Marketplace is ReentrancyGuard {
         uint tokenId;
         address seller;
         bool isSent;
+        string uuid;
     }
 
-    // itemId -> Item
-    mapping(uint => Item) public items;
+    // itemId -> Certificate
     mapping(uint => Certificate) public certificates;
 
     event certOffered(
@@ -47,19 +36,16 @@ contract Marketplace is ReentrancyGuard {
 
     event certSold(
         uint itemId,
-        address indexed nft,
+        address nft,
         uint tokenId,
         address indexed seller,
-        address indexed buyer
+        address indexed buyer,
+        string uuid,
+        string indexed uuid_indexed
     );
 
-    constructor(uint _feePercent) {
-        feeAccount = payable(msg.sender);
-        feePercent = _feePercent;
-    }
-
     // function transferItem(uint _itemId, address receiver) external nonReentrant {
-    function transferItem(uint _itemId, address receiver) public {
+    function transferItem(uint _itemId, address receiver, string memory uuid) public {
         Certificate storage certificate = certificates[_itemId];
         require(_itemId > 0 && _itemId <= itemCount, "item doesn't exist");
         certificate.isSent = true;
@@ -69,11 +55,13 @@ contract Marketplace is ReentrancyGuard {
             address(certificate.nft),
             certificate.tokenId,
             certificate.seller,
-            receiver
+            receiver,
+            uuid,
+            uuid
         );
     }
 
-    function makeCertificate(IERC721 _nft, uint _tokenId, address receiver) external nonReentrant {
+    function makeCertificate(IERC721 _nft, uint _tokenId, address receiver, string memory uuid) external nonReentrant {
         itemCount ++;
         _nft.transferFrom(msg.sender, address(this), _tokenId);
         certificates[itemCount] = Certificate (
@@ -81,7 +69,8 @@ contract Marketplace is ReentrancyGuard {
             _nft,
             _tokenId,
             payable(msg.sender),
-            false
+            false,
+            uuid
         );
         // emit Offered event
         emit certOffered(
@@ -90,6 +79,6 @@ contract Marketplace is ReentrancyGuard {
             _tokenId,
             msg.sender
         );
-        transferItem(_tokenId, receiver);
+        transferItem(_tokenId, receiver, uuid);
     }
 }
