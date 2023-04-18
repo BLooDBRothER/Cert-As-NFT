@@ -5,7 +5,7 @@ import { FormControl, InputLabel, Input, InputAdornment, IconButton, Alert, Menu
 import { Buffer } from "buffer";
 import Button from '../../components/Button';
 import { client } from '../../config.ipfs';
-import { useMetaMask } from '../../context/MetaMask';
+import { useNFT } from '../../context/NFT';
 import { useUser } from '../../context/User';
 import { useNavigate } from 'react-router-dom';
 import cert_img from '../../assets/c++.png'
@@ -13,7 +13,7 @@ import cert_img from '../../assets/c++.png'
 const steps = ["Creating NFT data", "Minting Certificate as NFT", "Approve the Certificate", "Transferring Certificate"]
 
 const Mint = () => {
-  const {createNFT, message, account, loadingAccount} = useMetaMask();
+  const {createNFT, message, account, loadingAccount} = useNFT();
   const {user} = useUser();
   const navigate = useNavigate();
 

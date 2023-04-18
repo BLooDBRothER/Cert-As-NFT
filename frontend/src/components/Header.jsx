@@ -5,7 +5,7 @@ import Avatar from '@mui/material/Avatar';
 import { Link, NavLink } from 'react-router-dom';
 import { useUser } from '../context/User';
 import { Menu, MenuItem } from '@mui/material';
-import { useMetaMask } from '../context/MetaMask';
+import { useNFT } from '../context/NFT';
 
 function stringToColor(string) {
     let hash = 0;
@@ -38,7 +38,7 @@ function stringAvatar(name) {
 const Header = ({ showWallet = false }) => {
     const { user, logout } = useUser();
 
-    const {web3Handler, account, logoutMetaMask} = useMetaMask();
+    const {web3Handler, account, logoutMetaMask} = useNFT();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useMetaMask } from '../../context/MetaMask'
+import { useNFT } from '../../context/NFT'
 import { Card, CardMedia, CardContent, IconButton, Tooltip } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +7,7 @@ import cert_img from '../../assets/c++.png'
 import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 
 const ShowCertificate = ({organization = false}) => {
-    const {loading, certificate, loadStudentCertificate, loadOrgCertificate, setSelectedCertificate, account} = useMetaMask();
+    const {loading, certificate, loadStudentCertificate, loadOrgCertificate, setSelectedCertificate, account} = useNFT();
     const navigate = useNavigate();
 
     // const [certificate, setCertificate] = useState([]);

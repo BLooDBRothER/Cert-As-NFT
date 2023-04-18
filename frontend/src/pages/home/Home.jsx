@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react'
 import Header from '../../components/Header';
 import { useUser } from '../../context/User'
 import Index from './Index';
-import { useMetaMask } from '../../context/MetaMask';
+import { useNFT } from '../../context/NFT';
 import { useNavigate } from 'react-router-dom';
 import ShowCertificate from './ShowCertificate';
 import { Alert } from '@mui/material'
 
 const Home = () => {
   const {user} = useUser();
-  const {account} = useMetaMask();
+  const {account} = useNFT();
 
   const navigate = useNavigate();
 

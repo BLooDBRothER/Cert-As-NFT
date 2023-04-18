@@ -4,7 +4,7 @@ import { Box, Divider, Chip, IconButton, Skeleton } from '@mui/material';
 import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
 import ShareIcon from '@mui/icons-material/Share';
 import Header from '../../components/Header';
-import { useMetaMask } from '../../context/MetaMask';
+import { useNFT } from '../../context/NFT';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import cert_img from '../../assets/c++.png'
@@ -12,7 +12,7 @@ import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 
 
 const index = () => {
-    const { getSingleCertificate, isAllSet } = useMetaMask();
+    const { getSingleCertificate, isAllSet } = useNFT();
 
     const { cert_uuid } = useParams();
 

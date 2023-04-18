@@ -9,7 +9,7 @@ import { client } from "../config.ipfs";
 import axios from "axios";
 import { v4 as uuidv4 } from 'uuid';
 
-const metaMaskContext = createContext({});
+const nftContext = createContext({});
 
 const msgInitialState = {
     code: 0,
@@ -18,9 +18,9 @@ const msgInitialState = {
     msg: ''
 }
 
-export const useMetaMask = () => useContext(metaMaskContext);
+export const useNFT = () => useContext(nftContext);
 
-const MetaMaskProvider = ({ children }) => {
+const NFTProvider = ({ children }) => {
     const [account, setAccount] = useState({
         address: null,
         isOrganization: false,
@@ -164,9 +164,13 @@ const MetaMaskProvider = ({ children }) => {
             const accounts = await window.ethereum.request({
                 method: "eth_requestAccounts",
             });
+            
             await checkOrganizationWalletAddress(accounts[0]);
             // Get provider from Metamask
+            // console.log(window.)
             const provider = new ethers.providers.Web3Provider(window.ethereum);
+            console.log(provider)
+            
             // Set signer
             const signer = provider.getSigner();
             
@@ -184,7 +188,10 @@ const MetaMaskProvider = ({ children }) => {
             setLoadingAccount(false);
         }
         catch(err){
-            loadContracts()
+            const provider = new ethers.providers.JsonRpcProvider('https://polygon-mumbai.g.alchemy.com/v2/4gyaOZUVucMpUFpanc4hSkEX2Z-B4nIO');
+            const wallet = new ethers.Wallet(import.meta.env.VITE_ETH_PRIVATE_KEY, provider);
+            const signer = wallet.provider.getSigner(wallet.address);
+            loadContracts(signer)
             setLoadingAccount(false);
         }
     }
@@ -194,7 +201,7 @@ const MetaMaskProvider = ({ children }) => {
     }, [])
 
     return (
-        <metaMaskContext.Provider
+        <nftContext.Provider
             value={{
                 account,
                 web3Handler,
@@ -213,8 +220,8 @@ const MetaMaskProvider = ({ children }) => {
             }}
         >
             {children}
-        </metaMaskContext.Provider>
+        </nftContext.Provider>
     );
 };
 
-export default MetaMaskProvider;
+export default NFTProvider;

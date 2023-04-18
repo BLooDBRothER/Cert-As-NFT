@@ -10,7 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Regsiter';
 import UserProvider from './context/User';
 import Verify from './pages/Verify';
-import MetaMaskProvider from './context/MetaMask';
+import NFTProvider from './context/NFT';
 import Mint from './pages/mint';
 import Profile from './pages/profile';
 import Personal from './pages/profile/Personal';
@@ -75,10 +75,10 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <MetaMaskProvider>
+    <NFTProvider>
       <UserProvider>
         <RouterProvider router={router} />
       </UserProvider>
-    </MetaMaskProvider>
+    </NFTProvider>
   </React.StrictMode>,
 )
