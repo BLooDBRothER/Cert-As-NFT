@@ -29,3 +29,7 @@ test/
 contractsData/
 
 backend/public/
+
+#Hardhat files
+cache
+artifacts
