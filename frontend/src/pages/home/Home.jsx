@@ -5,6 +5,7 @@ import Index from './Index';
 import { useMetaMask } from '../../context/MetaMask';
 import { useNavigate } from 'react-router-dom';
 import ShowCertificate from './ShowCertificate';
+import { Alert } from '@mui/material'
 
 const Home = () => {
   const {user} = useUser();
@@ -36,9 +37,15 @@ const Home = () => {
   return (
     <>
     <Header showWallet />
-    {message && <div>{message}</div>}
-    {!user.isLoggedIn && !account.address && <Index />}
-    {!user.isLoggedIn && account.address && <ShowCertificate />}
+    {
+      message ? 
+      <Alert className='w-fit my-2 mx-auto' severity="error">{message}</Alert>:
+      <>
+        {!user.isLoggedIn && !account.address && <Index />}
+        {!user.isLoggedIn && account.address && <ShowCertificate />}
+        {user.isLoggedIn && account.address && <ShowCertificate organization />}
+      </>
+    }
     </>
   )
 }

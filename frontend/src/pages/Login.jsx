@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom'
-import { FormControl, InputLabel, Input, InputAdornment, IconButton, Alert } from '@mui/material';
+import { FormControl, InputLabel, Input, InputAdornment, IconButton, Alert, TextField } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import EmailIcon from '@mui/icons-material/Email';
@@ -91,7 +91,7 @@ const Login = () => {
                                         type='email'
                                         required
                                         onChange={(e) => { setEmail(e.target.value) }}
-                                        sx={{ color: '#EEE', fontSize: '1.5rem' }}
+                                        sx={{color: '#EEE', fontSize: '1.5rem' }}
                                         endAdornment={
                                             <InputAdornment position="end">
                                                 <IconButton tabIndex={-1}>
@@ -127,7 +127,7 @@ const Login = () => {
                             <p className=' text-sm text-primary text-center'>Don't have an Account ? <NavLink to="/register" className={'text-danger underline'}>Register Here</NavLink></p>
                             <Button>Login</Button>
                         </form>
-                        {alert && <Alert className=' absolute top-full left-0 w-full mt-2' severity="error">{alert}</Alert>}
+                        {alert && <Alert className='absolute top-full left-0 w-full mt-2' severity="error">{alert}</Alert>}
                     </div> :
                     <Resend time={reminingTime} onComplete={resendEmail} />
             }

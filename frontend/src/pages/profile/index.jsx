@@ -36,7 +36,7 @@ const listItems = [
 ]
 
 const Profile = () => {
-    const { user } = useUser();
+    const { user, userLoading } = useUser();
     const navigate = useNavigate();
     const match = useMatches();
     
@@ -46,10 +46,7 @@ const Profile = () => {
         organization_logo: '',
       });
 
-    useEffect(() => {
-        setSelectedItem(match[1].handle.idx);
-    }, [match]);
-
+      
     async function getProfile(){
         const res = await axiosGetProfile();
         console.log(res);
@@ -57,13 +54,18 @@ const Profile = () => {
     }
 
     useEffect(() => {
+        setSelectedItem(match[1].handle.idx);
+    }, [match]);
+        
+    useEffect(() => {
         getProfile();
-      }, []);
+    }, []);
 
-    // useEffect(() => {
-    //     if(!user.isLoggedIn) return;
-    //     navigate('/');
-    // }, [user.isLoggedIn])
+    useEffect(() => {
+        if(userLoading) return;
+        if(user.isLoggedIn) return;
+        navigate('/');
+    }, [user.isLoggedIn, userLoading])
 
     return (
         <>

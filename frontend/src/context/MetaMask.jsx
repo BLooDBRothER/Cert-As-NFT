@@ -11,6 +11,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 const metaMaskContext = createContext({});
 
+const msgInitialState = {
+    code: 0,
+    activeStep: 0,
+    isCompleted: false,
+    msg: ''
+}
+
 export const useMetaMask = () => useContext(metaMaskContext);
 
 const MetaMaskProvider = ({ children }) => {
@@ -23,12 +30,8 @@ const MetaMaskProvider = ({ children }) => {
     const [marketplace, setMarketplace] = useState(null);
     const [certificate, setCertificate] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [message, setMessage] = useState({
-        code: 0,
-        activeStep: 0,
-        isCompleted: false,
-        msg: ''
-    });
+    const [message, setMessage] = useState(msgInitialState);
+    const [loadingAccount, setLoadingAccount] = useState(true);
 
     const [selectedCertificate, setSelectedCertificate] = useState();
 
@@ -42,6 +45,7 @@ const MetaMaskProvider = ({ children }) => {
         console.log(marketplace)
         const nft = new ethers.Contract(NFTAddress.address, NFTAbi.abi, signer)
         setNFT(nft)
+        console.log(nft)
     }
 
     function logout() {
@@ -66,6 +70,7 @@ const MetaMaskProvider = ({ children }) => {
     }
 
     async function transferCertificate(result, address) {
+        setMessage({...msgInitialState});
         // * Inititaing process
         const uri = `https://ipfs.io/ipfs/${result.path}`
         // * mint nft 
@@ -79,44 +84,19 @@ const MetaMaskProvider = ({ children }) => {
         // * Making and transferring
         setMessage({...message, activeStep:3});
         // add nft to marketplace
-        await (await marketplace.makeCertificate(nft.address, id, address)).wait();
+        const uuid = uuidv4();
+        console.log(uuid);
+        await (await marketplace.makeCertificate(nft.address, id, address, uuid)).wait();
         setMessage('Received NFT');
         setMessage({...message, activeStep:4, isCompleted: true});
-        const itemCount2 = await marketplace.itemCount()
     }
 
-    const getSingleCertificate = async (nft_address) => {
-        if(!marketplace || !nft_address) return null;
-        console.log(selectedCertificate)
-        const filter = marketplace.filters.certSold(selectedCertificate, null, null, null, null)
-        const results = await marketplace.queryFilter(filter)
-        console.log(results);
+    const reteriveCertificate = async (results) => {
         const purchases = await Promise.all(results.map(async i => {
+            console.log(i)
             i = i.args
             console.log(i)
-            const uri = await nft.tokenURI(i.tokenId)
-            console.log(uri);
-            const response = await axios(uri)
-            console.log(response)
-            const metadata = response.data;
-            let purchasedItem = {
-                itemId: i.itemId,
-                ...metadata
-            }
-            return purchasedItem
-        }))
-        return results.length ? purchases : null;
-    } 
-
-    const loadPurchasedItems = async (accountAddress) => {
-        setCertificate([]);
-        setLoading(true);
-        if(!marketplace || !nft) return;
-        const filter = marketplace.filters.certSold(null, null, null, null, account.address)
-        const results = await marketplace.queryFilter(filter)
-        const purchases = await Promise.all(results.map(async i => {
-            i = i.args
-            console.log(i)
+            console.log('item id - ', i.itemId)
             const uri = await nft.tokenURI(i.tokenId)
             console.log(uri);
             const response = await axios(uri)
@@ -124,12 +104,43 @@ const MetaMaskProvider = ({ children }) => {
             const metadata = response.data;
             console.log(metadata);
             let purchasedItem = {
-                itemId: i.itemId,
+                uuid: i.uuid,
                 nft: i.nft,
                 ...metadata
             }
             return purchasedItem
         }))
+        return purchases
+    }
+
+    const getSingleCertificate = async (cert_uuid) => {
+        if(!marketplace || !cert_uuid) return null;
+        console.log('here')
+        const filter = marketplace.filters.certSold(null, null, null, null, null, null, cert_uuid)
+        console.log(filter)
+        const results = await marketplace.queryFilter(filter)
+        const purchases = await reteriveCertificate(results);
+        return results.length ? purchases : null;
+    }
+
+    const loadStudentCertificate = async () => {
+        setCertificate([]);
+        setLoading(true);
+        if(!marketplace || !nft) return;
+        const filter = marketplace.filters.certSold(null, null, null, null, account.address, null, null)
+        const results = await marketplace.queryFilter(filter)
+        const purchases = await reteriveCertificate(results);
+        setCertificate(purchases);
+        setLoading(false);
+    }
+
+    const loadOrgCertificate = async () => {
+        setCertificate([]);
+        setLoading(true);
+        if(!marketplace || !nft) return;
+        const filter = marketplace.filters.certSold(null, null, null, account.address, null, null, null)
+        const results = await marketplace.queryFilter(filter)
+        const purchases = await reteriveCertificate(results);
         setCertificate(purchases);
         setLoading(false);
     }
@@ -147,25 +158,35 @@ const MetaMaskProvider = ({ children }) => {
     }
 
     async function web3Handler() {
-        console.log("hi");
-        const accounts = await window.ethereum.request({
-            method: "eth_requestAccounts",
-        });
-        checkOrganizationWalletAddress(accounts[0]);
-        // Get provider from Metamask
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        // Set signer
-        const signer = provider.getSigner();
-        
-        window.ethereum.on("chainChanged", (chainId) => {
-            window.location.reload();
-        });
-        
-        window.ethereum.on("accountsChanged", async function (accounts) {
-            checkOrganizationWalletAddress(accounts[0]);
-            await web3Handler();
-        });
-        loadContracts(signer)
+        try{
+            setLoadingAccount(true);
+            console.log("hi");
+            const accounts = await window.ethereum.request({
+                method: "eth_requestAccounts",
+            });
+            await checkOrganizationWalletAddress(accounts[0]);
+            // Get provider from Metamask
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            // Set signer
+            const signer = provider.getSigner();
+            
+            window.ethereum.on("chainChanged", (chainId) => {
+                window.location.reload();
+            });
+            
+            window.ethereum.on("accountsChanged", async function (accounts) {
+                console.log('change')
+                setLoadingAccount(true);                
+                checkOrganizationWalletAddress(accounts[0]);
+                await web3Handler();
+            });
+            loadContracts(signer)
+            setLoadingAccount(false);
+        }
+        catch(err){
+            loadContracts()
+            setLoadingAccount(false);
+        }
     }
 
     useEffect(() => {
@@ -180,9 +201,11 @@ const MetaMaskProvider = ({ children }) => {
                 logoutMetaMask: logout,
                 message,
                 createNFT,
-                loadPurchasedItems,
+                loadStudentCertificate,
+                loadOrgCertificate,
                 getSingleCertificate,
                 loading,
+                loadingAccount,
                 certificate,
                 isAllSet,
                 selectedCertificate,

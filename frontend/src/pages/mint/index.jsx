@@ -13,20 +13,9 @@ import cert_img from '../../assets/c++.png'
 const steps = ["Creating NFT data", "Minting Certificate as NFT", "Approve the Certificate", "Transferring Certificate"]
 
 const Mint = () => {
-  const {createNFT, message, account, loadPurchasedItems} = useMetaMask();
+  const {createNFT, message, account, loadingAccount} = useMetaMask();
   const {user} = useUser();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if(!account.address || !user.isLoggedIn) {
-      navigate('/')
-    }
-  }, [account, user])
-
-  useEffect(() => {
-    // console.log(message)
-    loadPurchasedItems();
-  }, [account])
 
   const [inputObj, setInputObj] = useState({
     name: '',
@@ -41,36 +30,34 @@ const Mint = () => {
 
   const [tempfile, setTempFile] = useState(null);
 
-  console.log('course selected - ', courseSelected)
-
   const [fileMsg, setFileMsg] = useState("Please Select File");
 
   const uploadFile = async (e) => {
     e.preventDefault();
-    // const file = e.target.files[0];
-    // if(!file){
-    //   return;
-    // }
-    // setFileMsg("Uploading File ....")
-    // setUploading(false)
-    // setInputObj({...inputObj, file: e.target.files})
-    // console.log('hi');
-    // try {
-    //   const result = await client.add(file)
-    //   console.log(result)
-    //   setInputObj({...inputObj, ipfs_link: `https://ipfs.io/ipfs/${result.path}`});
-    //   // setImage(`https://ipfs.io/ipfs/${result.path}`);
-    //   setUploading(true);
-    //   setFileMsg("File uploaded Successfully");
-    // } catch (error) {
-    //   setFileMsg("Error in File Uploading");
-    //   console.log("ipfs image upload error: ", error)
-    // }
-    setTimeout(() => {
-      console.log('in')
-      setTempFile(cert_img)
-      setUploading(true)
-    }, [2000])
+    const file = e.target.files[0];
+    if(!file){
+      return;
+    }
+    setFileMsg("Uploading File ....")
+    setUploading(false)
+    setInputObj({...inputObj, file: e.target.files})
+    console.log('hi');
+    try {
+      const result = await client.add(file)
+      console.log(result)
+      setInputObj({...inputObj, ipfs_link: `https://ipfs.io/ipfs/${result.path}`});
+      // setImage(`https://ipfs.io/ipfs/${result.path}`);
+      setUploading(true);
+      setFileMsg("File uploaded Successfully");
+    } catch (error) {
+      setFileMsg("Error in File Uploading");
+      console.log("ipfs image upload error: ", error)
+    }
+    // setTimeout(() => {
+    //   console.log('in')
+    //   setTempFile(cert_img)
+    //   setUploading(true)
+    // }, [2000])
 }
 
 
@@ -79,8 +66,8 @@ const Mint = () => {
     setShowStepper(true);
     const dataObj = {
       name: inputObj.name,
-      // ipfs_link: inputObj.ipfs_link,
-      ipfs_link: "http://localhost:5000/logo/13979b78-1887-4c89-ba01-0d9b863ce7de-1679904943236.jpg",
+      ipfs_link: inputObj.ipfs_link,
+      // ipfs_link: "http://localhost:5000/logo/13979b78-1887-4c89-ba01-0d9b863ce7de-1679904943236.jpg",
       course: courseSelected,
       org_email: user.email,
       org_name: user.organization_name,
@@ -90,6 +77,16 @@ const Mint = () => {
     }
     createNFT(dataObj, inputObj.address);
   }
+
+  useEffect(() => {
+    console.log(account, loadingAccount)
+    if(loadingAccount) return;
+    console.log('here')
+    if(!account.address || !user.isLoggedIn || !account.isOrganization) {
+      navigate('/')
+    }
+  }, [account, user, loadingAccount])
+
 
   return (
     <>
@@ -164,14 +161,15 @@ const Mint = () => {
                     !uploading ?
                       <>
                         <Skeleton width="100%" height={200} />
-                        {/* <Skeleton><a href={inputObj.ipfs_link}> <Button>IPFS LINK</Button></a></Skeleton> */}
+                        <Skeleton><a href={inputObj.ipfs_link}> <Button>IPFS LINK</Button></a></Skeleton>
                       </>
                       :
                       <>
                         <div className='w-full h-[200px] bg-transparent'>
-                          {tempfile && <img className='w-full h-[200px]' src={cert_img} />}
+                          {/* {tempfile && <img className='w-full h-[200px]' src={inputObj.ipfs_link} />} */}
+                          <img className='w-full h-[200px]' src={inputObj.ipfs_link} />
                         </div>
-                        {/* <a href={inputObj.ipfs_link} target='_blank'> <Button>IPFS LINK</Button></a> */}
+                        <a href={inputObj.ipfs_link} target='_blank'> <Button>IPFS LINK</Button></a>
                       </>
                   }
                 </Paper>
@@ -184,7 +182,7 @@ const Mint = () => {
             <Stepper className=' bg-primary p-2 py-5 rounded-md' alternativeLabel activeStep={message.activeStep}>
                 {steps.map((step, idx) => {
                   return (<Step key={step}>
-                    <StepLabel error={message.code === 1 && message.activeStep === idx ? true : false} className='text-accent'>{step}</StepLabel>
+                    <StepLabel sx={{'& .MuiSvgIcon-root.MuiStepIcon-root.Mui-completed': {color: '#23b123'} }} error={message.code === 1 && message.activeStep === idx ? true : false} className='text-accent'>{step}</StepLabel>
                   </Step>)
                 })}
             </Stepper>
@@ -196,10 +194,3 @@ const Mint = () => {
 }
 
 export default Mint
-
-{/* <>
-                        <div className='w-full h-[200px] bg-transparent'>
-                          {inputObj.ipfs_link && <img className='w-full h-[200px]' src={cert_img} />}
-                        </div>
-                        <a href={inputObj.ipfs_link} target='_blank'> <Button>IPFS LINK</Button></a>
-                      </> */}

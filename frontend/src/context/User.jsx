@@ -8,6 +8,7 @@ export const useUser = () => useContext(userContext);
 const UserProvider = ({children}) => {
 
   const [user, setUser] = useState({isLoggedIn: false});
+  const [userLoading, setUserLoading] = useState(true);
 
   async function checkLogin(){
     const res = await axiosCheckLogin();
@@ -15,6 +16,7 @@ const UserProvider = ({children}) => {
       setUser({...res.data, isLoggedIn: true});
       return;
     }
+    setUserLoading(false);
     console.log(res);
   }
 
@@ -42,6 +44,7 @@ const UserProvider = ({children}) => {
     <userContext.Provider value={
       {
         user,
+        userLoading,
         updateCourse,
         login,
         logout

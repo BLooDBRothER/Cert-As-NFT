@@ -53,7 +53,7 @@ const Header = ({ showWallet = false }) => {
             <NavLink to="/"><h1>YOUR CERTIFICATE</h1></NavLink>
             <div className='flex items-center justify-center gap-3'>
                 {user.isLoggedIn && account.address && <Link to='/mint' className=' text-accent hover:text-primary mx-1 text-xl nav-link'>Mint</Link>}
-                {user.isLoggedIn && account.address && <Link to='/mint' className=' text-accent hover:text-primary mx-1 text-xl'>Mint</Link>}
+                {/* {user.isLoggedIn && account.address && <Link to='/mint' className=' text-accent hover:text-primary mx-1 text-xl'>Mint</Link>} */}
                 {showWallet && (account.address ? <Button onClick={logoutMetaMask} handleCss=" text-ellipsis w-[200px] whitespace-nowrap overflow-hidden">{account.address}</Button> : <Button handleCss='flex items-center' onClick={web3Handler}>Connect Wallet <span><img className='mx-2' width={25} src={metamaskIc} /></span></Button>)}
                 {user.isLoggedIn &&
                     <>

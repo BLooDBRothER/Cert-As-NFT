@@ -68,7 +68,7 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "certificate/:nft_address",
+    path: "certificate/:cert_uuid",
     element: <Certificate />
   }
 ]);
